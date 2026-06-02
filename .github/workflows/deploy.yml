@@ -5,9 +5,14 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
+
     outputs:
       image: ${{ steps.meta.outputs.tags }}
       repo: ${{ steps.repo.outputs.repo }}
@@ -45,7 +50,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v7
         with:
-          context: .
+          context: .  
           platforms: linux/arm64,linux/amd64
           push: true
           tags: ghcr.io/${{ steps.repo.outputs.repo }}:${{ github.sha }}
