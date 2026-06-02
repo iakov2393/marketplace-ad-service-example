@@ -11,9 +11,7 @@ logger = logging.getLogger("seed")
 
 # Ходим через nginx фронтенда, тот же origin, что и у SPA.
 BASE_URL = os.getenv("MARKETPLACE_URL", "http://localhost:8080")
-SEED_FILE = pathlib.Path(
-    os.getenv("SEED_FILE", pathlib.Path(__file__).resolve().parent.parent / "seed.json")
-)
+SEED_FILE = pathlib.Path(os.getenv("SEED_FILE", pathlib.Path(__file__).resolve().parent.parent / "seed.json"))
 
 
 def load_seed() -> tuple[list[dict], list[str], list[dict]]:
@@ -24,9 +22,7 @@ def load_seed() -> tuple[list[dict], list[str], list[dict]]:
 async def register(client: httpx.AsyncClient, user: dict) -> None:
     resp = await client.post("/api/auth/register", json=user)
     if resp.status_code == 201:
-        logger.info(
-            "registered user %s (user_id=%s)", user["email"], resp.json()["user_id"]
-        )
+        logger.info("registered user %s (user_id=%s)", user["email"], resp.json()["user_id"])
     elif resp.status_code == 409:
         logger.info("user %s already exists, skipping", user["email"])
     else:
@@ -137,9 +133,7 @@ def _build_ad(item: dict, cities: list[str]) -> dict:
 
 
 async def main() -> None:
-    logging.basicConfig(
-        level=logging.INFO, format="%(asctime)s %(levelname)-5s %(message)s"
-    )
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)-5s %(message)s")
     random.seed(42)
 
     users, cities, items = load_seed()
@@ -152,9 +146,7 @@ async def main() -> None:
     )
     logger.info("using base url %s", BASE_URL)
 
-    async with httpx.AsyncClient(
-        base_url=BASE_URL, timeout=10.0, follow_redirects=True
-    ) as client:
+    async with httpx.AsyncClient(base_url=BASE_URL, timeout=10.0, follow_redirects=True) as client:
         logger.info("=== auth: register + login ===")
         for user in users:
             await register(client, user)
@@ -195,9 +187,7 @@ async def main() -> None:
 
         logger.info("=== ads: read ===")
         all_ads = await list_ads(client, limit=100)
-        logger.info(
-            "GET /ads → total=%s, items=%s", all_ads["total"], len(all_ads["items"])
-        )
+        logger.info("GET /ads → total=%s, items=%s", all_ads["total"], len(all_ads["items"]))
 
         for user in users:
             my = await list_my_ads(client, tokens[user["email"]])

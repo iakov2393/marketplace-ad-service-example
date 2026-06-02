@@ -24,16 +24,11 @@ class SQLAlchemyOutboxRepository(OutboxRepository):
         )
         result = await self._session.execute(stmt)
         models = result.scalars().all()
-        return [
-            OutboxMessage(id=m.id, event_type=m.event_type, payload=m.payload)
-            for m in models
-        ]
+        return [OutboxMessage(id=m.id, event_type=m.event_type, payload=m.payload) for m in models]
 
     async def mark_published(self, ids: list[int]) -> None:
         if not ids:
             return
         await self._session.execute(
-            update(OutboxModel)
-            .where(OutboxModel.id.in_(ids))
-            .values(published_at=func.now())
+            update(OutboxModel).where(OutboxModel.id.in_(ids)).values(published_at=func.now())
         )

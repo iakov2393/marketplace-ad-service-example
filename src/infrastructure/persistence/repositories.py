@@ -52,11 +52,7 @@ class SQLAlchemyAdRepository(AdRepository):
         offset: int,
     ) -> tuple[List[Ad], int]:
         query = select(AdModel).where(AdModel.status == AdStatus.ACTIVE.value)
-        count_query = (
-            select(func.count())
-            .select_from(AdModel)
-            .where(AdModel.status == AdStatus.ACTIVE.value)
-        )
+        count_query = select(func.count()).select_from(AdModel).where(AdModel.status == AdStatus.ACTIVE.value)
 
         if user_id is not None:
             query = query.where(AdModel.user_id == user_id)
