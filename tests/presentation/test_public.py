@@ -39,9 +39,7 @@ async def test_create_ad_requires_auth(client: AsyncClient) -> None:
     assert resp.status_code == 401
 
 
-async def test_create_and_get_ad(
-    client: AsyncClient, auth_headers: dict[str, str]
-) -> None:
+async def test_create_and_get_ad(client: AsyncClient, auth_headers: dict[str, str]) -> None:
     created = await _create_ad(client, auth_headers)
 
     resp = await client.get(f"/ads/{created['id']}")
@@ -59,9 +57,7 @@ async def test_get_ad_not_found(client: AsyncClient) -> None:
     assert resp.json()["detail"] == "Ad not found"
 
 
-async def test_list_ads_returns_all_active(
-    client: AsyncClient, auth_headers: dict[str, str]
-) -> None:
+async def test_list_ads_returns_all_active(client: AsyncClient, auth_headers: dict[str, str]) -> None:
     await _create_ad(client, auth_headers, price=100, category="Электроника")
     await _create_ad(client, auth_headers, price=500, category="Электроника")
     await _create_ad(client, auth_headers, price=250, category="Одежда")
@@ -94,9 +90,7 @@ async def test_my_ads_requires_auth(client: AsyncClient) -> None:
     assert resp.status_code == 401
 
 
-async def test_update_ad_by_author(
-    client: AsyncClient, auth_headers: dict[str, str]
-) -> None:
+async def test_update_ad_by_author(client: AsyncClient, auth_headers: dict[str, str]) -> None:
     created = await _create_ad(client, auth_headers)
 
     resp = await client.put(
@@ -124,9 +118,7 @@ async def test_update_ad_forbidden_for_non_author(
     assert resp.json()["detail"] == "Forbidden"
 
 
-async def test_update_ad_not_found(
-    client: AsyncClient, auth_headers: dict[str, str]
-) -> None:
+async def test_update_ad_not_found(client: AsyncClient, auth_headers: dict[str, str]) -> None:
     resp = await client.put(
         "/ads/999",
         headers=auth_headers,
@@ -135,9 +127,7 @@ async def test_update_ad_not_found(
     assert resp.status_code == 404
 
 
-async def test_delete_ad_by_author(
-    client: AsyncClient, auth_headers: dict[str, str]
-) -> None:
+async def test_delete_ad_by_author(client: AsyncClient, auth_headers: dict[str, str]) -> None:
     created = await _create_ad(client, auth_headers)
 
     resp = await client.delete(f"/ads/{created['id']}", headers=auth_headers)
@@ -147,9 +137,7 @@ async def test_delete_ad_by_author(
     assert resp.status_code == 404
 
 
-async def test_deleted_ad_hidden_from_my_ads(
-    client: AsyncClient, auth_headers: dict[str, str]
-) -> None:
+async def test_deleted_ad_hidden_from_my_ads(client: AsyncClient, auth_headers: dict[str, str]) -> None:
     created = await _create_ad(client, auth_headers)
     await _create_ad(client, auth_headers)
 
@@ -162,9 +150,7 @@ async def test_deleted_ad_hidden_from_my_ads(
     assert all(item["id"] != created["id"] for item in data["items"])
 
 
-async def test_deleted_ad_hidden_from_list(
-    client: AsyncClient, auth_headers: dict[str, str]
-) -> None:
+async def test_deleted_ad_hidden_from_list(client: AsyncClient, auth_headers: dict[str, str]) -> None:
     created = await _create_ad(client, auth_headers)
 
     await client.delete(f"/ads/{created['id']}", headers=auth_headers)

@@ -26,9 +26,7 @@ async def test_delete_ad_by_author(fake_uow: FakeUnitOfWork) -> None:
     assert archived is not None
     assert archived.status == AdStatus.ARCHIVED
 
-    delete_events = [
-        m for m in fake_uow.outbox.messages if m.event_type == "ad.deleted"
-    ]
+    delete_events = [m for m in fake_uow.outbox.messages if m.event_type == "ad.deleted"]
     assert len(delete_events) == 1
     assert delete_events[0].payload == {"ad_id": created.id}
 
@@ -51,9 +49,7 @@ async def test_delete_ad_already_archived(fake_uow: FakeUnitOfWork) -> None:
     with pytest.raises(AdNotFoundError):
         await delete.execute(ad_id=created.id, user_id=1)
 
-    delete_events = [
-        m for m in fake_uow.outbox.messages if m.event_type == "ad.deleted"
-    ]
+    delete_events = [m for m in fake_uow.outbox.messages if m.event_type == "ad.deleted"]
     assert len(delete_events) == 1
 
 

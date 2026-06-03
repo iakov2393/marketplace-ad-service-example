@@ -17,9 +17,7 @@ async def _create_ad(client: AsyncClient, auth_headers: dict[str, str]) -> dict:
     return resp.json()
 
 
-async def test_internal_get_returns_active(
-    client: AsyncClient, auth_headers: dict[str, str]
-) -> None:
+async def test_internal_get_returns_active(client: AsyncClient, auth_headers: dict[str, str]) -> None:
     created = await _create_ad(client, auth_headers)
 
     resp = await client.get(f"/internal/ads/{created['id']}")
@@ -29,9 +27,7 @@ async def test_internal_get_returns_active(
     assert data["status"] == "active"
 
 
-async def test_internal_get_returns_archived(
-    client: AsyncClient, auth_headers: dict[str, str]
-) -> None:
+async def test_internal_get_returns_archived(client: AsyncClient, auth_headers: dict[str, str]) -> None:
     created = await _create_ad(client, auth_headers)
 
     del_resp = await client.delete(f"/ads/{created['id']}", headers=auth_headers)
@@ -49,9 +45,7 @@ async def test_internal_get_not_found(client: AsyncClient) -> None:
     assert resp.status_code == 404
 
 
-async def test_internal_get_requires_no_auth(
-    client: AsyncClient, auth_headers: dict[str, str]
-) -> None:
+async def test_internal_get_requires_no_auth(client: AsyncClient, auth_headers: dict[str, str]) -> None:
     created = await _create_ad(client, auth_headers)
 
     resp = await client.get(f"/internal/ads/{created['id']}")

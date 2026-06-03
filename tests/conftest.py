@@ -71,9 +71,7 @@ class FakeOutboxRepository(OutboxRepository):
         self._next_id = 1
 
     async def add(self, event_type: str, payload: dict[str, Any]) -> None:
-        self.messages.append(
-            OutboxMessage(id=self._next_id, event_type=event_type, payload=payload)
-        )
+        self.messages.append(OutboxMessage(id=self._next_id, event_type=event_type, payload=payload))
         self._next_id += 1
 
     async def fetch_unpublished(self, limit: int) -> list[OutboxMessage]:

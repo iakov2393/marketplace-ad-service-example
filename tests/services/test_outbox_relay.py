@@ -32,9 +32,7 @@ async def test_relay_sends_and_marks_published(
 
 
 @pytest.mark.asyncio
-async def test_relay_noop_when_outbox_empty(
-    fake_uow: FakeUnitOfWork, fake_broker: FakeMessageBroker
-) -> None:
+async def test_relay_noop_when_outbox_empty(fake_uow: FakeUnitOfWork, fake_broker: FakeMessageBroker) -> None:
     relay = OutboxRelay(uow_factory=lambda: fake_uow, broker=fake_broker)
     processed = await relay._process_batch()
 

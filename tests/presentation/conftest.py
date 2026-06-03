@@ -24,7 +24,7 @@ _test_settings = Settings(
     jwt_algorithm=JWT_ALGORITHM,
     kafka_brokers="localhost:9092",
     kafka_topic_marketplace_ads="ads",
-))
+)
 
 
 @pytest.fixture

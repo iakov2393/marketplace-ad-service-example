@@ -33,9 +33,7 @@ async def test_update_ad_by_author(fake_uow: FakeUnitOfWork) -> None:
     assert updated.price == 200
     assert updated.description == "d"
 
-    update_events = [
-        m for m in fake_uow.outbox.messages if m.event_type == "ad.updated"
-    ]
+    update_events = [m for m in fake_uow.outbox.messages if m.event_type == "ad.updated"]
     assert len(update_events) == 1
     assert update_events[0].payload == {"ad_id": created.id}
 
