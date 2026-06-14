@@ -49,3 +49,4 @@ class OutboxModel(Base):
     published_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True), nullable=True, default=None
     )
+    trace_id: Mapped[str | None] = mapped_column(String(36), nullable=True, default=None)

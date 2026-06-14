@@ -5,14 +5,17 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.application.ports.outbox import OutboxMessage, OutboxRepository
 from src.infrastructure.persistence.models import OutboxModel
+from src.infrastructure.tracing import get_trace_id
 
 
 class SQLAlchemyOutboxRepository(OutboxRepository):
     def __init__(self, session: AsyncSession) -> None:
         self._session = session
 
-    async def add(self, event_type: str, payload: dict[str, Any]) -> None:
-        self._session.add(OutboxModel(event_type=event_type, payload=payload))
+    async def add(self, event_type: str, payload: dict[str, Any], trace_id: str | None = None) -> None:
+        self._session.add(
+            OutboxModel(event_type=event_type, payload=payload, trace_id=trace_id or get_trace_id())
+        )
 
     async def fetch_unpublished(self, limit: int) -> list[OutboxMessage]:
         stmt = (
@@ -24,7 +27,10 @@ class SQLAlchemyOutboxRepository(OutboxRepository):
         )
         result = await self._session.execute(stmt)
         models = result.scalars().all()
-        return [OutboxMessage(id=m.id, event_type=m.event_type, payload=m.payload) for m in models]
+        return [
+            OutboxMessage(id=m.id, event_type=m.event_type, payload=m.payload, trace_id=m.trace_id)
+            for m in models
+        ]
 
     async def mark_published(self, ids: list[int]) -> None:
         if not ids:

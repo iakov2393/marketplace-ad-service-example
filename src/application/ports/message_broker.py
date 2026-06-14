@@ -7,4 +7,5 @@ class MessageBroker(ABC):
     async def send(
         self,
         payload: dict[str, Any],
+        headers: list[tuple[str, bytes]] | None = None,
     ) -> None: ...

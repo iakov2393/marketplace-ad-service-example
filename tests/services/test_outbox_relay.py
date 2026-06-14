@@ -8,7 +8,7 @@ from tests.conftest import FakeMessageBroker, FakeUnitOfWork
 
 
 class RaisingBroker(MessageBroker):
-    async def send(self, payload: dict[str, Any]) -> None:
+    async def send(self, payload: dict[str, Any], headers: list[tuple[str, bytes]] | None = None) -> None:
         raise RuntimeError("kafka unavailable")
 
 
